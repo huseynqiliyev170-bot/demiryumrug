@@ -1,0 +1,1105 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@theme inline {
+  --font-sans: var(--font-inter), 'Inter', sans-serif;
+  --font-serif: var(--font-display), 'Noto Serif Display', serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* ---- Artifact palette ----
+     Derived from the object itself: the warm charcoal of the plinth, the
+     matte brass of the cast, and the ivory of the presentation card. */
+  --color-wine-deep: var(--wine-deep);
+  --color-wine: var(--wine);
+  --color-wine-soft: var(--wine-soft);
+  --color-ivory: var(--ivory);
+  --color-ivory-warm: var(--ivory-warm);
+  --color-ivory-dim: var(--ivory-dim);
+  --color-gold: var(--gold);
+  --color-gold-bright: var(--gold-bright);
+  --color-oxblood: var(--oxblood);
+  --color-oxblood-soft: var(--oxblood-soft);
+  --color-ink: var(--ink);
+
+  /* Exhibition plates are cut, not rounded. */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+}
+
+:root {
+  color-scheme: dark;
+
+  --wine-deep: #171512;
+  --wine: #221e1a;
+  --wine-soft: #332c25;
+
+  --ivory: #f6f1e7;
+  --ivory-warm: #ece2d1;
+  --ivory-dim: #c2b6a2;
+
+  /* Matte brass, not bright gold. */
+  --gold: #c4a468;
+  --gold-bright: #ddbe7d;
+  --oxblood: #612b35;
+  --oxblood-soft: #92505b;
+
+  --ink: #0f0e0c;
+
+  --background: var(--wine-deep);
+  --foreground: var(--ivory);
+  --card: var(--wine);
+  --card-foreground: var(--ivory);
+  --popover: var(--wine);
+  --popover-foreground: var(--ivory);
+  --primary: var(--gold);
+  --primary-foreground: var(--wine-deep);
+  --secondary: var(--wine-soft);
+  --secondary-foreground: var(--ivory);
+  --muted: var(--wine);
+  --muted-foreground: var(--ivory-dim);
+  --accent: var(--gold);
+  --accent-foreground: var(--wine-deep);
+  --destructive: #b0563f;
+  --border: rgba(244, 240, 232, 0.14);
+  --input: rgba(244, 240, 232, 0.2);
+  --ring: var(--gold);
+  --radius: 0px;
+
+  /* ---- Ruled hairlines ----
+     Four fixed weights replace the ad-hoc gold/8 … gold/30 soup, so every
+     rule on the page belongs to the same drawing. */
+  --rule: rgba(180, 158, 114, 0.2);
+  --rule-strong: rgba(180, 158, 114, 0.4);
+  --rule-ink: rgba(15, 14, 12, 0.1);
+  --rule-ink-strong: rgba(15, 14, 12, 0.22);
+
+  /* ---- Motion ---- */
+  --e-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --e-inout: cubic-bezier(0.76, 0, 0.24, 1);
+  --e-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ---- Editorial type scale ----
+     Four display steps only. Every heading on the page is one of these. */
+  --fs-display-xl: clamp(3.25rem, 10.5vw, 9rem);
+  --fs-display-l: clamp(2.6rem, 7vw, 6.25rem);
+  --fs-display-m: clamp(1.9rem, 4vw, 3.1rem);
+  --fs-lead: clamp(1.3rem, 2.1vw, 1.95rem);
+
+  /* The hero's inscriptional step. Tracked out rather than tightened, so it is
+     sized to sit under the display steps at the same optical weight. */
+  --fs-monument: clamp(2.9rem, 7.4vw, 6.75rem);
+
+  /* ---- Vertical rhythm ---- */
+  --sp-section: clamp(5.5rem, 11vw, 10rem);
+  --sp-block: clamp(3.5rem, 6vw, 6.5rem);
+
+  /* One measure for the whole page: the left edge never wanders. */
+  --measure: 96rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    /* Lenis owns smooth scrolling; native smooth scroll would fight it. */
+    scroll-behavior: auto;
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Photography never stretches: intrinsic ratio is always respected. */
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  ::selection {
+    background: var(--gold);
+    color: var(--ink);
+  }
+}
+
+/* =========================================================
+   EDITORIAL PRIMITIVES
+   ========================================================= */
+
+/* Page measure. Replaces the five different max-widths the chapters used. */
+.dy-measure {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--measure);
+  padding-inline: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .dy-measure {
+    padding-inline: 2.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .dy-measure {
+    padding-inline: 4rem;
+  }
+}
+
+/* Section rhythm. Two classes replace eleven hand-tuned padding pairs. */
+.dy-section {
+  padding-block: var(--sp-section);
+}
+
+/* Numerals in metadata are data, so they line up in columns. */
+.dy-num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+/* Metadata voice: two tracking values, used everywhere. */
+.dy-eyebrow {
+  font-size: 0.625rem;
+  line-height: 1;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+}
+
+.dy-meta {
+  font-size: 0.5625rem;
+  line-height: 1.2;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+}
+
+/* Display type is set light at size: the hairline strokes of the serif do the
+   work, the way a struck inscription does. Weight is the contrast, not size. */
+.dy-display {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  letter-spacing: -0.035em;
+  line-height: 0.86;
+}
+
+.dy-display-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--rule-strong);
+}
+
+/* Thin brass rule used to separate editorial blocks. */
+.dy-rule {
+  height: 1px;
+  background: linear-gradient(to right, var(--rule-strong), transparent);
+}
+
+/* =========================================================
+   TEXTURE
+   The one atmospheric layer on the page: a fixed film grain that keeps large
+   flat fields of charcoal from reading as flat vector fills.
+   ========================================================= */
+.dy-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  background-image: url('/grain.svg');
+  background-size: 180px 180px;
+}
+
+/* =========================================================
+   REVEAL SYSTEM
+   A vocabulary, not one gesture: text rises, rules draw, photographs
+   uncover. All compositor-friendly, so scrolling stays at 60fps.
+   ========================================================= */
+.dy-reveal {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  transition:
+    opacity 0.9s var(--e-out),
+    transform 0.9s var(--e-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.dy-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Imagery: a restrained scale-settle. */
+.dy-reveal-scale {
+  opacity: 0;
+  transform: scale(1.045);
+  transition:
+    opacity 1s var(--e-out),
+    transform 1.4s var(--e-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.dy-reveal-scale.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Curtain: the photograph is uncovered from its bottom edge while the frame
+   inside settles back from a push-in. This is the cinematic one, reserved for
+   the lead photograph of a chapter. */
+.dy-reveal-mask {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 1.5s var(--e-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.dy-reveal-mask.is-visible {
+  clip-path: inset(0 0 0 0);
+}
+
+.dy-reveal-mask > * {
+  transform: scale(1.08) translate3d(0, -2%, 0);
+  transition: transform 1.9s var(--e-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.dy-reveal-mask.is-visible > * {
+  transform: none;
+}
+
+/* Ruled hairline that draws across as its block arrives. */
+.dy-reveal-line {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.1s var(--e-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.dy-reveal-line.is-visible,
+.is-visible .dy-reveal-line {
+  transform: scaleX(1);
+}
+
+/* Text choreography: each line of a display heading rises out of its own mask,
+   so the type assembles instead of fading in as one block. */
+.dy-line-mask {
+  display: block;
+  overflow: hidden;
+  /* The clip box is grown, then pulled back by the same amount: the mask hides
+     the animation without clipping tall diacritics (Ə, İ, Ğ), descenders, or
+     the -webkit-text-stroke — all of which overflow a 0.86 line-height box. */
+  padding-block: 0.24em;
+  margin-block: -0.24em;
+}
+
+.dy-line-inner {
+  display: block;
+  transform: translate3d(0, 128%, 0);
+  transition: transform 1.15s var(--e-out);
+  transition-delay: calc(var(--reveal-delay, 0ms) + var(--line-i, 0) * 110ms);
+}
+
+.is-visible .dy-line-inner {
+  transform: none;
+}
+
+/* Safety net: a reveal must never gate content. If anything keeps JS from
+   marking the element visible — late hydration, an anchor jump, a suspended
+   tab — the curtain, the shift and the dimming are simply lifted after a
+   moment. Progressive enhancement, never a blank wall. */
+@keyframes dy-reveal-failsafe {
+  to {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.dy-reveal,
+.dy-reveal-scale,
+.dy-reveal-mask,
+.dy-reveal-line {
+  animation: dy-reveal-failsafe 0.01s var(--e-out) 2.5s forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dy-reveal,
+  .dy-reveal-scale,
+  .dy-reveal-mask,
+  .dy-reveal-line {
+    animation: none;
+  }
+}
+
+/* `will-change` is held only while an element is pending, then dropped, so we
+   never keep dozens of layers alive on the GPU at once. */
+.dy-reveal:not(.is-visible),
+.dy-reveal-scale:not(.is-visible),
+.dy-reveal-mask:not(.is-visible),
+.dy-reveal-line:not(.is-visible) {
+  will-change: opacity, transform, clip-path;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dy-reveal,
+  .dy-reveal-scale,
+  .dy-reveal-mask,
+  .dy-reveal-line,
+  .dy-line-inner {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    transition: none !important;
+  }
+
+  .dy-reveal-mask > * {
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* =========================================================
+   LENIS
+   The inertial scroller drives the real scroll position, so it needs the
+   document to size itself and native smooth-scroll to stay out of its way.
+   ========================================================= */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* =========================================================
+   HERO — THE MONUMENT
+
+   The hero is one composition on a central axis: the two words of a sentence
+   with the object standing between them, on a plinth, over its engraving.
+   Everything here serves that single idea.
+   ========================================================= */
+
+/* ---- Room -----------------------------------------------
+   Three gradients, no more: the room's own falloff, a shaft of light down the
+   axis the object stands on, and the key light that tracks the pointer. */
+.dy-room {
+  background:
+    linear-gradient(118deg, rgba(97, 43, 53, 0.16), transparent 34%),
+    radial-gradient(27% 62% at 50% -4%,
+      rgba(215, 182, 117, 0.26),
+      transparent 72%),
+    radial-gradient(130% 100% at 50% 4%,
+      var(--wine) 0%,
+      var(--wine-deep) 66%);
+}
+
+.dy-spot {
+  --mx: 50%;
+  --my: 20%;
+  background: radial-gradient(44rem 38rem at var(--mx) var(--my),
+      rgba(215, 182, 117, 0.16),
+      transparent 68%);
+}
+
+/* Film grain, scoped to the hero so large flat fields of charcoal never read
+   as a flat vector fill. */
+.dy-hero-grain {
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url('/grain.svg');
+  background-size: 180px 180px;
+}
+
+/* ---- Geometry -------------------------------------------
+   The photograph is a cutout, and the silhouette fills only part of its
+   1333x2000 frame — measured off the alpha channel:
+
+     x   396 -> 935    (29.7% -> 70.2%)
+     y   443 -> 1600   (22.1% -> 80.0%)
+
+   The composition needs the object placed by its silhouette, not by that
+   frame, so the base lands on the plinth and the knuckles tuck into the word
+   above. `.dy-object` is the silhouette's own box; the image is scaled and
+   offset inside it from the numbers below. Re-measure these if the photograph
+   is ever recut. */
+.dy-object {
+  --src-w: 1333;
+  --src-h: 2000;
+  --sil-w: 540;
+  --sil-h: 1158;
+  --sil-x: 396;
+  --sil-y: 443;
+
+  position: relative;
+  height: var(--object-height);
+  aspect-ratio: var(--sil-w) / var(--sil-h);
+}
+
+.dy-object-frame {
+  position: absolute;
+  inset: 0;
+  /* The silhouette box is exactly the visible object, so clipping here trims
+     only transparent pixels — and gives the raise something clean to sweep. */
+  clip-path: inset(0 0 0 0);
+}
+
+.dy-object-frame>img {
+  position: absolute;
+  /* `left` resolves against the box width, `top` against its height, so each
+     offset is expressed against the matching silhouette dimension. */
+  left: calc(var(--sil-x) / var(--sil-w) * -100%);
+  top: calc(var(--sil-y) / var(--sil-h) * -100%);
+  width: calc(var(--src-w) / var(--sil-w) * 100%);
+  height: auto;
+  max-width: none;
+}
+
+/* Contact shadow and light pool. The object's foot rests on the plinth line,
+   so both straddle it: the shadow is the contact, the pool is the light the
+   object stands in. */
+.dy-object-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -3.5%;
+  width: 185%;
+  height: 11%;
+  translate: -50% 0;
+  background: radial-gradient(closest-side,
+      rgba(8, 7, 6, 0.78),
+      rgba(8, 7, 6, 0.3) 56%,
+      transparent 76%);
+  filter: blur(9px);
+}
+
+.dy-object-pool {
+  position: absolute;
+  left: 50%;
+  bottom: -9%;
+  width: 340%;
+  height: 28%;
+  translate: -50% 0;
+  /* Screened, so the pool adds light to whatever is behind it instead of
+     laying a brass film over the inscription. */
+  mix-blend-mode: screen;
+  background: radial-gradient(closest-side,
+      rgba(194, 174, 135, 0.26),
+      rgba(194, 174, 135, 0.09) 44%,
+      transparent 74%);
+  filter: blur(14px);
+}
+
+/* ---- The monument ---------------------------------------
+   Line one, the object standing on the plinth, line two. The object is a thing
+   with weight: its foot rests on a drawn ground line and it rises only far
+   enough to breach line one's baseline. Line two sits clear, below the ground.
+
+   `--interlock`  how far the fist breaches line one's baseline
+   `--plinth-gap` clearance between the ground line and line two's box */
+.dy-monument {
+  position: relative;
+  font-size: var(--fs-monument);
+  --interlock: 0.07em;
+  --plinth-gap: 0.34em;
+}
+
+/* The plinth: one hairline drawn out along the axis — the horizon the object
+   stands on, and the rule that separates it from the word below. */
+.dy-plinth {
+  height: 1px;
+  background: linear-gradient(to right,
+      transparent,
+      var(--rule-strong) 16%,
+      var(--rule-strong) 84%,
+      transparent);
+}
+
+/* Placed at the object's foot: the figure's own `top` plus its height, written
+   as the same expression so the line and the object cannot drift apart. */
+.dy-monument-ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(0.9em - var(--interlock) + var(--object-height));
+}
+
+/* The heading carries the composition's font size from `.dy-monument`, so the
+   figure's `em` offsets and the line masks' padding resolve off one value. */
+.dy-monument-type {
+  position: relative;
+  z-index: 0;
+  font-size: inherit;
+  text-align: center;
+}
+
+.dy-monument-void {
+  display: block;
+  height: calc(var(--object-height) - var(--interlock) + var(--plinth-gap));
+}
+
+.dy-monument-figure {
+  position: absolute;
+  left: 50%;
+  /* Line one's box is 1em x 0.9 line-height; the object's top starts one
+     interlock above where that box ends, so the fist just breaches it. */
+  top: calc(0.9em - var(--interlock));
+  translate: -50% 0;
+}
+
+/* Inscriptional setting: tracked out and cut in stone, not the tight editorial
+   display used for the chapter headings. `text-indent` returns the trailing
+   letter-space so a centred line stays optically centred. */
+.dy-monument-word {
+  display: block;
+  font-family: var(--font-serif);
+  font-weight: 300;
+  line-height: 0.9;
+  letter-spacing: 0.055em;
+  text-indent: 0.055em;
+}
+
+.dy-inscription {
+  font-size: 0.6875rem;
+  line-height: 1;
+  letter-spacing: 0.52em;
+  text-indent: 0.52em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  .dy-inscription {
+    font-size: 0.75rem;
+    letter-spacing: 0.62em;
+    text-indent: 0.62em;
+  }
+}
+
+/* ---- Load sequence -------------------------------------
+   One orchestrated arrival rather than scattered fades: the rail draws, the
+   sentence assembles, the monument rises off its plinth, and the engraving is
+   cut outward from the centre. */
+@keyframes dy-hero-rise {
+  from {
+    transform: translate3d(0, 130%, 0);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+@keyframes dy-hero-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The monument is uncovered from the base up, so it reads as rising. */
+@keyframes dy-hero-raise {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes dy-hero-settle {
+  from {
+    transform: scale(1.06) translate3d(0, 3%, 0);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+@keyframes dy-hero-draw {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Struck, not faded: the engraving opens from the centre of the plinth. */
+@keyframes dy-hero-cut {
+  from {
+    clip-path: inset(0 50% 0 50%);
+    opacity: 0;
+  }
+
+  to {
+    clip-path: inset(0 -1% 0 -1%);
+    opacity: 1;
+  }
+}
+
+.dy-hero-rise {
+  animation: dy-hero-rise 1.25s var(--e-out) both;
+  animation-delay: var(--hero-delay, 0ms);
+}
+
+.dy-hero-in {
+  animation: dy-hero-in 1s var(--e-out) both;
+  animation-delay: var(--hero-delay, 0ms);
+}
+
+.dy-hero-raise {
+  animation: dy-hero-raise 1.5s var(--e-out) both;
+  animation-delay: var(--hero-delay, 0ms);
+}
+
+.dy-hero-raise>* {
+  animation: dy-hero-settle 1.9s var(--e-out) both;
+  animation-delay: var(--hero-delay, 0ms);
+}
+
+.dy-hero-draw {
+  transform-origin: left;
+  animation: dy-hero-draw 1.2s var(--e-out) both;
+  animation-delay: var(--hero-delay, 0ms);
+}
+
+/* The plinth is drawn out from the axis the composition is built on. */
+.dy-hero-draw--axis {
+  transform-origin: center;
+  animation-duration: 1.5s;
+}
+
+.dy-hero-cut {
+  animation: dy-hero-cut 1.5s var(--e-out) both;
+  animation-delay: var(--hero-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .dy-hero-rise,
+  .dy-hero-in,
+  .dy-hero-raise,
+  .dy-hero-raise>*,
+  .dy-hero-draw,
+  .dy-hero-cut {
+    animation: none;
+  }
+}
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+.dy-header {
+  border-bottom: 1px solid transparent;
+  transition:
+    background-color 0.5s var(--e-soft),
+    border-color 0.5s var(--e-soft);
+}
+
+.dy-header--scrolled {
+  background-color: color-mix(in srgb, var(--wine-deep) 82%, transparent);
+  border-bottom-color: var(--rule);
+  backdrop-filter: blur(14px) saturate(1.15);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15);
+}
+
+.dy-header-inner {
+  transition: padding 0.5s var(--e-out);
+}
+
+.dy-header--scrolled .dy-header-inner {
+  padding-top: 0.8125rem;
+  padding-bottom: 0.8125rem;
+}
+
+.dy-nav-link {
+  position: relative;
+}
+
+.dy-nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  height: 1px;
+  width: 100%;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.45s var(--e-out);
+}
+
+.dy-nav-link:hover::after,
+.dy-nav-link[data-active='true']::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Scroll progress rail */
+.dy-progress {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(to right,
+      var(--gold),
+      var(--gold-bright));
+  transform: scaleX(var(--progress, 0));
+  transform-origin: left;
+  opacity: 0.85;
+}
+
+/* =========================================================
+   MOBILE MENU
+   ========================================================= */
+.dy-menu {
+  opacity: 0;
+  transform: translate3d(0, -8px, 0);
+  pointer-events: none;
+  transition:
+    opacity 0.36s ease,
+    transform 0.36s var(--e-out),
+    visibility 0.36s;
+  visibility: hidden;
+}
+
+.dy-menu[data-open='true'] {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.dy-menu-item {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  transition:
+    opacity 0.5s var(--e-out),
+    transform 0.5s var(--e-out);
+}
+
+.dy-menu[data-open='true'] .dy-menu-item {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(90ms + var(--menu-i, 0) * 45ms);
+}
+
+/* =========================================================
+   MICRO-INTERACTIONS
+   ========================================================= */
+
+/* Magnetic control: JS translates the wrapper toward the pointer while the
+   inner face lags, which reads as physical mass rather than a CSS trick. */
+.dy-magnetic {
+  transition: transform 0.55s var(--e-out);
+}
+
+.dy-magnetic[data-engaged='true'] {
+  transition: transform 0.12s linear;
+}
+
+/* Brass control. The fill wipes up from the baseline instead of cross-fading,
+   so a press reads as a mechanism closing. */
+.dy-cta {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition: color 0.45s var(--e-out);
+}
+
+.dy-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--gold-bright);
+  transform: translate3d(0, 100%, 0);
+  transition: transform 0.55s var(--e-out);
+}
+
+.dy-cta:hover::before,
+.dy-cta:focus-visible::before {
+  transform: none;
+}
+
+.dy-cta:active {
+  transform: scale(0.985);
+}
+
+/* Ghost control: the brass fill wipes up behind the label, which inverts. */
+.dy-ghost {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    color 0.45s var(--e-out),
+    border-color 0.45s var(--e-out);
+}
+
+.dy-ghost::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--gold);
+  transform: translate3d(0, 100%, 0);
+  transition: transform 0.55s var(--e-out);
+}
+
+.dy-ghost:hover,
+.dy-ghost:focus-visible {
+  color: var(--wine-deep);
+  border-color: var(--gold);
+}
+
+.dy-ghost:hover::before,
+.dy-ghost:focus-visible::before {
+  transform: none;
+}
+
+.dy-btn {
+  transition:
+    background-color 0.32s var(--e-out),
+    border-color 0.32s var(--e-out),
+    color 0.32s var(--e-out),
+    transform 0.16s ease;
+}
+
+.dy-btn:active {
+  transform: scale(0.985);
+}
+
+.dy-arrow,
+.dy-arrow--down {
+  display: inline-block;
+  transition: transform 0.35s var(--e-out);
+}
+
+.dy-btn:hover .dy-arrow,
+.dy-cta:hover .dy-arrow,
+.dy-ghost:hover .dy-arrow,
+a:hover>.dy-arrow {
+  transform: translateX(5px);
+}
+
+a:hover>.dy-arrow--down {
+  transform: translateY(3px);
+}
+
+.dy-social {
+  opacity: 0.7;
+  transition:
+    opacity 0.3s var(--e-out),
+    color 0.3s var(--e-out),
+    transform 0.3s var(--e-out);
+}
+
+.dy-social:hover {
+  opacity: 1;
+  color: var(--gold);
+  transform: translateY(-2px);
+}
+
+
+/* Keyboard focus is always visible, and always brass. */
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+/* =========================================================
+   PARALLAX
+   ========================================================= */
+.dy-parallax {
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .dy-menu,
+  .dy-menu-item,
+  .dy-nav-link::after,
+  .dy-btn,
+  .dy-cta,
+  .dy-cta::before,
+  .dy-ghost,
+  .dy-ghost::before,
+  .dy-magnetic,
+  .dy-social {
+    transition: none;
+  }
+
+  .dy-parallax {
+    transform: none !important;
+  }
+}
+
+/* =========================================================
+   SEAMS
+   Where the exhibition turns from charcoal to paper the change is staged, not
+   cut: the incoming surface is announced by a brass hairline over a short
+   gradient bleed, so the two halves read as one continuous room.
+   ========================================================= */
+.dy-seam {
+  position: relative;
+  height: clamp(4rem, 7vw, 7rem);
+  pointer-events: none;
+}
+
+.dy-seam::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(to right,
+      transparent,
+      var(--rule-strong) 24%,
+      var(--rule-strong) 76%,
+      transparent);
+}
+
+.dy-seam--to-paper {
+  background: linear-gradient(to bottom, var(--wine-deep), var(--ivory));
+}
+
+.dy-seam--to-charcoal {
+  background: linear-gradient(to bottom, var(--ivory), var(--wine-deep));
+}
+
+/* =========================================================
+   GALLERY
+   ========================================================= */
+
+/* Horizontal rail: the mobile rotation strip and the viewer's contact sheet.
+   The scrollbar is hidden because the rail's own edge fade and snap points
+   already say it scrolls; `contain` stops a sideways swipe from also dragging
+   the page or triggering back-navigation. */
+.dy-rail {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+.dy-rail::-webkit-scrollbar {
+  display: none;
+}
+
+/* Scroll cue: a hairline that draws down, then retracts from the top. It marks
+   the one interaction the turntable depends on, so it is the only looping
+   animation on the page. */
+@keyframes dy-scroll-cue {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+    opacity: 0;
+  }
+
+  30% {
+    transform: scaleY(1);
+    transform-origin: top;
+    opacity: 1;
+  }
+
+  60% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+    opacity: 1;
+  }
+
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+    opacity: 0;
+  }
+}
+
+.dy-scroll-cue {
+  animation: dy-scroll-cue 2.6s var(--e-soft) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dy-scroll-cue {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* =========================================================
+   POSTS
+   The film strip under the masthead: the whole feed rolls by once in
+   miniature. The track carries the sequence twice and slides by exactly
+   its own half, so the loop lands seamlessly; pauses under the pointer. */
+.dy-post-strip {
+  overflow: hidden;
+}
+
+@keyframes dy-post-strip-roll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.dy-post-strip-track {
+  animation: dy-post-strip-roll 48s linear infinite;
+}
+
+.dy-post-strip:hover .dy-post-strip-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dy-post-strip-track {
+    animation: none;
+  }
+}
