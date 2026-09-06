@@ -20,7 +20,12 @@
       "Bash(npx next *)",
       "PowerShell(npx tsc --noEmit)",
       "PowerShell(npx next start -p 3100)",
-      "PowerShell(Remove-Item *)"
+      "PowerShell(Remove-Item *)",
+      "Bash(pnpm --version)",
+      "PowerShell(corepack *)",
+      "Bash(git rm *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
     ]
   }
 }
